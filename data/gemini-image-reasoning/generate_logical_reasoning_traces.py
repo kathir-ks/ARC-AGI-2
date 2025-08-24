@@ -113,7 +113,6 @@ if __name__ == "__main__":
     
         reasoning_traces[entry] = task_set
         entry += 1
-        break
     
     with open('reasoning_traces.json', 'w') as f:
         json.dump(reasoning_traces, f)

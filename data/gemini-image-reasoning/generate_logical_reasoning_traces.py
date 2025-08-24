@@ -9,6 +9,7 @@ import os
 from google import genai
 from google.genai import types
 import argparse
+import json
 
 # load environment variables
 
@@ -91,8 +92,28 @@ if __name__ == "__main__":
     if len(files) <= 0 :
         raise ValueError("No of files should not be zero")
     
+    entry = 0
+    # Reasoning traces
+    reasoning_traces = {}
     # generate the traces from the prompt
-    logical_reasoning = generate_text_using_image(client, reasoning_prompt, files[0])
+    for file in files:
+        task_type = 'train'
+        image_name = file.split('\\')[-1]
+        task_id = image_name.split('_')[0]
+        if 'test' in file:
+            task_type = 'test'
+        logical_reasoning = generate_text_using_image(client, reasoning_prompt, file)
 
-    # store the inferences to the file 
-    print(logical_reasoning)
+        task_set = {
+            'task_type': task_type, 
+            'image_name': image_name, 
+            'task_id': task_id, 
+            'reasoning': logical_reasoning
+        }
+    
+        reasoning_traces[entry] = task_set
+        entry += 1
+        break
+    
+    with open('reasoning_traces.json', 'w') as f:
+        json.dump(reasoning_traces, f)

@@ -83,7 +83,9 @@ if __name__ == "__main__":
 
     api_key = args.api_key
     images_src_path = args.images_src_path
-
+    print(api_key)
+    if not api_key:
+        raise KeyError("GEMINI_API_KEY is missing in the environment variables")
     client = setup_genai_client(api_key)
 
     # load the images
